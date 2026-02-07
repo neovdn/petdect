@@ -5,16 +5,13 @@
 @section('content')
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     
-    <!-- Header -->
     <div class="mb-6">
         <h1 class="text-3xl font-bold text-[#2D5016]">📊 Dashboard Admin</h1>
         <p class="text-gray-600">Selamat datang, {{ auth()->user()->full_name }}!</p>
     </div>
     
-    <!-- Statistics Cards -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         
-        <!-- Card 1: Transaksi Hari Ini -->
         <div class="bg-gradient-to-br from-[#2D5016] to-[#4A7C2C] rounded-xl shadow-lg p-6 text-white">
             <div class="flex items-center justify-between mb-2">
                 <h3 class="text-sm font-semibold opacity-90">Transaksi Hari Ini</h3>
@@ -27,7 +24,6 @@
             <p class="text-xs opacity-75 mt-1">transaksi</p>
         </div>
         
-        <!-- Card 2: Total Sampah Terkumpul -->
         <div class="bg-gradient-to-br from-[#7FB069] to-[#6A9957] rounded-xl shadow-lg p-6 text-white">
             <div class="flex items-center justify-between mb-2">
                 <h3 class="text-sm font-semibold opacity-90">Sampah Hari Ini</h3>
@@ -39,7 +35,6 @@
             <p class="text-xs opacity-75 mt-1">kg terkumpul</p>
         </div>
         
-        <!-- Card 3: Saldo Kas -->
         <div class="bg-gradient-to-br from-[#8B4513] to-[#A0522D] rounded-xl shadow-lg p-6 text-white">
             <div class="flex items-center justify-between mb-2">
                 <h3 class="text-sm font-semibold opacity-90">Saldo Kas</h3>
@@ -62,11 +57,12 @@
         
     </div>
     
-    <!-- Chart Section -->
     <div class="bg-white rounded-xl shadow-lg p-6 border-2 border-[#7FB069]">
         <h2 class="text-xl font-bold text-[#2D5016] mb-4">📈 Cash Flow (30 Hari Terakhir)</h2>
         <canvas id="cashFlowChart" style="max-height: 300px;"></canvas>
     </div>
+
+    <div id="chart-data" data-payload="{{ json_encode($cashFlowData) }}" class="hidden"></div>
     
 </div>
 @endsection
@@ -75,7 +71,10 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 const ctx = document.getElementById('cashFlowChart').getContext('2d');
-const chartData = @json($cashFlowData);
+
+// Ambil data dari atribut HTML untuk menghindari error sintaks di editor
+const rawData = document.getElementById('chart-data').getAttribute('data-payload');
+const chartData = JSON.parse(rawData);
 
 new Chart(ctx, {
     type: 'line',
