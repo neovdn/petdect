@@ -13,24 +13,19 @@ return new class extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
-            $table->string('transaction_code')->unique(); // TRX-2026...
+            $table->string('transaction_code')->unique(); // TRX-20260205001
+            
+            // Relasi ke users (kasir)
+            $table->foreignId('cashier_id')->constrained('users')->onDelete('restrict');
             $table->string('cashier_name'); // Snapshot nama kasir
             
-            // Relasi ke tabel customers
-            // Kalau customer dihapus, data transaksi jangan hilang (set null)
+            // Relasi ke customers
             $table->foreignId('customer_id')->nullable()->constrained('customers')->nullOnDelete();
-            $table->string('customer_name_snapshot'); // Jaga-jaga kalau user ganti nama
+            $table->string('customer_name_snapshot'); // Snapshot nama customer
             
-            // Detail Sampah (Dibuat flat aja biar gampang)
-            $table->float('pet_weight');
-            $table->decimal('pet_price_at_transaction', 10, 2);
-            $table->decimal('pet_subtotal', 10, 2);
-            
-            $table->float('non_pet_weight');
-            $table->decimal('non_pet_price_at_transaction', 10, 2);
-            $table->decimal('non_pet_subtotal', 10, 2);
-            
+            // Total transaksi (sum dari transaction_items)
             $table->decimal('total_amount', 12, 2);
+            
             $table->timestamps(); // timestamp transaksi
         });
     }

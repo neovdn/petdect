@@ -1,59 +1,359 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🌿 Smart Waste Bank - Sistem Kasir Bank Sampah Berbasis IoT
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+**Tugas Akhir** - Sistem Kasir Bank Sampah dengan integrasi IoT (Timbangan Digital + Kamera Deteksi Sampah)
 
-## About Laravel
+## 📋 Fitur Utama
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### 🔐 Authentication & Authorization
+- Login untuk Admin dan Kasir
+- Role-based access control
+- Middleware protection
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### 👨‍💼 Dashboard Admin
+- **Statistik Real-time**:
+  - Total transaksi hari ini
+  - Total sampah terkumpul (kg)
+  - Saldo kas bank sampah
+- **Grafik Cash Flow** (30 hari terakhir)
+- **CRUD Master Data**:
+  - Harga Sampah (Waste Prices)
+  - Data Customer
+  - Data User (Admin & Kasir)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 💰 Fitur Kasir (Smart Transaction)
+- **Live Scale Display** (Timbangan Digital)
+  - Polling real-time setiap 1 detik
+  - Status indicator (Stable/Stabilizing/Waiting)
+  - Simulasi IoT untuk development
+- **Shopping Cart System**
+  - Add/Remove items
+  - Auto-calculate subtotal
+  - Customer selection
+- **Checkout & Print**
+  - Generate transaction code otomatis
+  - Update cash flow
+  - Cetak struk PDF (DomPDF)
+- **Riwayat Transaksi**
 
-## Learning Laravel
+### 🤖 API Endpoints untuk IoT
+- `POST /api/iot/update-reading` - Update data dari timbangan & kamera
+- `POST /api/iot/reset-scale` - Reset/tare timbangan
+- `GET /api/iot/device/{id}/status` - Cek status device
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+---
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 🛠️ Tech Stack
 
-## Laravel Sponsors
+- **Backend**: Laravel 11
+- **Database**: MySQL
+- **Frontend**: Blade Templates + Tailwind CSS 4
+- **JavaScript**: Vanilla JS (AJAX polling)
+- **PDF Generation**: DomPDF
+- **Chart**: Chart.js
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+---
 
-### Premium Partners
+## 📦 Instalasi
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### 1. Prerequisites
+Pastikan sudah terinstal:
+- PHP >= 8.2
+- Composer
+- MySQL
+- Node.js & NPM
 
-## Contributing
+### 2. Clone & Install Dependencies
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```bash
+# Install PHP dependencies
+composer install
 
-## Code of Conduct
+# Install Node dependencies
+npm install
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### 3. Environment Setup
 
-## Security Vulnerabilities
+```bash
+# Copy .env.example
+cp .env.example .env
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+# Generate application key
+php artisan key:generate
+```
 
-## License
+**Edit `.env`** dan sesuaikan konfigurasi database:
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=smart_waste_bank
+DB_USERNAME=root
+DB_PASSWORD=
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### 4. Database Migration & Seeding
+
+```bash
+# Buat database terlebih dahulu di MySQL
+# mysql -u root -p
+# CREATE DATABASE smart_waste_bank;
+
+# Jalankan migration
+php artisan migrate
+
+# Jalankan seeder (data dummy)
+php artisan db:seed
+```
+
+**Data Dummy yang dibuat:**
+- 1 Admin: `admin` / `admin123`
+- 1 Kasir: `kasir` / `kasir123`
+- 2 Jenis Sampah: PET (Rp 3.000/kg), NON-PET (Rp 1.500/kg)
+- 2 Customer contoh
+- 1 IoT Device: SCALE-001
+
+### 5. Build Assets
+
+```bash
+npm run build
+```
+
+### 6. Jalankan Server
+
+```bash
+php artisan serve
+```
+
+Aplikasi akan berjalan di: **http://localhost:8000**
+
+---
+
+## 🎯 Cara Menggunakan
+
+### Login
+1. Buka browser: `http://localhost:8000/login`
+2. Login sebagai:
+   - **Admin**: `admin` / `admin123`
+   - **Kasir**: `kasir` / `kasir123`
+
+### Admin Dashboard
+Setelah login sebagai admin, Anda bisa:
+- Lihat statistik di dashboard
+- Kelola harga sampah di menu "Harga Sampah"
+- Tambah/edit/hapus customer di menu "Customer"
+- Kelola user (admin/kasir) di menu "Users"
+
+### Kasir - Melakukan Transaksi
+
+#### Simulasi Input IoT (Developer Mode)
+Karena alat IoT belum tersambung, gunakan form simulasi:
+1. Masuk ke halaman **Kasir**
+2. Di panel "Live Scale", lihat kotak kuning **"DEVELOPER MODE"**
+3. Isi:
+   - **Berat**: Contoh `1.5` (kg)
+   - **Jenis Sampah**: Pilih `PET` atau `NON-PET`
+4. Klik tombol **"Simulate"**
+5. Data akan muncul di display timbangan
+
+#### Alur Transaksi
+1. **Pilih Customer** dari dropdown
+2. **Input data timbangan** (via simulasi)
+3. Tunggu status berubah menjadi **"🟢 Stable"**
+4. Klik **"🔒 Lock & Add to Cart"**
+5. Item masuk ke keranjang (panel kanan)
+6. Ulangi langkah 2-5 untuk menambah item lain
+7. Klik **"✅ CHECKOUT"**
+8. Modal sukses muncul
+9. Klik **"🖨️ Cetak Struk"** untuk download PDF
+
+### Print Struk PDF
+- Setelah checkout berhasil, klik tombol "Cetak Struk"
+- File PDF akan terbuka di tab baru
+- Format struk include: No. Transaksi, Tanggal, Kasir, Customer, Detail Items, Total
+
+---
+
+## 🔌 Integrasi dengan IoT (Future Implementation)
+
+### Endpoint API untuk ESP32/Raspberry Pi
+
+**POST** `/api/iot/update-reading`
+
+**Request Body (JSON):**
+```json
+{
+  "device_id": "SCALE-001",
+  "detected_class": "PET",
+  "weight_value": 1.5,
+  "is_stable": true
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Reading updated successfully",
+  "timestamp": "2026-02-05T10:30:00Z"
+}
+```
+
+### Cara Integrasi dari Hardware
+1. **ESP32/Arduino** mengirim HTTP POST request ke endpoint di atas
+2. Body JSON berisi data dari:
+   - **Load Cell** (HX711) → `weight_value`
+   - **Camera + TensorFlow Lite** → `detected_class`
+   - **Algoritma Stabilitas** → `is_stable`
+3. Web akan auto-update via AJAX polling setiap 1 detik
+
+**Contoh Code ESP32 (Arduino IDE):**
+```cpp
+#include <WiFi.h>
+#include <HTTPClient.h>
+#include <ArduinoJson.h>
+
+const char* ssid = "YOUR_WIFI";
+const char* password = "YOUR_PASSWORD";
+const char* serverUrl = "http://192.168.1.100:8000/api/iot/update-reading";
+
+void sendToServer(float weight, String wasteClass, bool isStable) {
+  HTTPClient http;
+  http.begin(serverUrl);
+  http.addHeader("Content-Type", "application/json");
+  
+  StaticJsonDocument<200> doc;
+  doc["device_id"] = "SCALE-001";
+  doc["detected_class"] = wasteClass;
+  doc["weight_value"] = weight;
+  doc["is_stable"] = isStable;
+  
+  String jsonString;
+  serializeJson(doc, jsonString);
+  
+  int httpResponseCode = http.POST(jsonString);
+  http.end();
+}
+```
+
+---
+
+## 📊 Database Schema
+
+### Users
+- `id`, `username`, `password`, `full_name`, `role` (admin/kasir)
+
+### Waste Prices
+- `waste_type` (PK), `price_per_kg`, `updated_at`
+
+### Customers
+- `id`, `customer_code`, `full_name`, `phone_number`, `address`, `total_transactions`
+
+### Transactions
+- `id`, `transaction_code`, `cashier_id`, `customer_id`, `total_amount`, `created_at`
+
+### Transaction Items
+- `id`, `transaction_id`, `waste_type`, `weight`, `price_per_kg`, `subtotal`
+
+### Cash Flow
+- `id`, `date`, `type` (DEBIT/KREDIT), `amount`, `description`, `current_balance`
+
+### IoT Devices
+- `device_id` (PK), `status`, `detected_class`, `weight_value`, `is_stable`
+
+### Current Readings
+- `id`, `device_id`, `detected_class`, `weight_value`, `is_stable`, `updated_at`
+
+---
+
+## 🎨 UI/UX Design Theme
+
+### Color Palette (Nature/Go Green)
+- **Primary Green**: `#2D5016`
+- **Secondary Green**: `#4A7C2C`
+- **Light Green**: `#7FB069`
+- **Cream Background**: `#FFFBF5`
+- **Wood Brown**: `#8B4513`
+
+### Typography
+- Font: Default system sans-serif (clear & readable)
+- Heading: Bold weights
+- Body: Regular weights
+
+### Components
+- **Rounded corners** untuk modern look
+- **Shadow effects** untuk depth
+- **Gradient backgrounds** pada cards
+- **Icon-first design** (emoji + SVG icons)
+
+---
+
+## 🐛 Troubleshooting
+
+### Migration Error
+```bash
+# Reset database
+php artisan migrate:fresh --seed
+```
+
+### Asset Not Loading
+```bash
+# Rebuild assets
+npm run build
+```
+
+### PDF Generation Error
+```bash
+# Install DomPDF jika belum
+composer require barryvdh/laravel-dompdf
+```
+
+### Permission Error (Linux/Mac)
+```bash
+chmod -R 775 storage bootstrap/cache
+```
+
+---
+
+## 📝 Todo / Future Improvements
+
+- [ ] Real IoT hardware integration (ESP32 + Load Cell + Camera)
+- [ ] Machine Learning model training untuk klasifikasi sampah
+- [ ] Laporan PDF (Harian, Bulanan, Tahunan)
+- [ ] Export data ke Excel
+- [ ] Notifikasi email untuk transaksi
+- [ ] Dashboard customer (tracking poin)
+- [ ] Multi-device support (multiple scales)
+- [ ] Real-time notification (WebSocket/Pusher)
+
+---
+
+## 👨‍💻 Developer
+
+**Nama**: [Nama Mahasiswa]  
+**NIM**: [NIM]  
+**Prodi**: [Program Studi]  
+**Universitas**: [Nama Universitas]  
+
+**Tugas Akhir**: Sistem Kasir Bank Sampah Berbasis IoT  
+**Tahun**: 2026
+
+---
+
+## 📄 License
+
+This project is for educational purposes (Tugas Akhir).
+
+---
+
+## 🙏 Acknowledgments
+
+- Laravel Framework
+- Tailwind CSS
+- Chart.js
+- DomPDF
+- IoT Community
+
+---
+
+**Happy Coding! 🌿♻️**
