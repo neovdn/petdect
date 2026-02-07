@@ -24,7 +24,7 @@ class TransactionController extends Controller
         $wastePrices = WastePrice::all();
         $currentReading = CurrentReading::where('device_id', 'SCALE-001')->first();
         
-        return view('cashier.index', compact('customers', 'wastePrices', 'currentReading'));
+        return view('index', compact('customers', 'wastePrices', 'currentReading'));
     }
 
     /**
@@ -248,7 +248,7 @@ class TransactionController extends Controller
     {
         $transaction = Transaction::with(['items', 'customer', 'cashier'])->findOrFail($id);
         
-        $pdf = Pdf::loadView('cashier.receipt', compact('transaction'));
+        $pdf = Pdf::loadView('receipt', compact('transaction'));
         
         return $pdf->stream('struk-' . $transaction->transaction_code . '.pdf');
     }
