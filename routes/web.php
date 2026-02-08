@@ -90,7 +90,7 @@ Route::middleware('auth')->group(function () {
     // Note: Jika Admin juga boleh akses kasir, pastikan middleware-nya sesuai.
     // Di sini saya biarkan terbuka untuk semua yang auth (admin & cashier), 
     // atau kamu bisa tambahkan middleware khusus jika perlu.
-    Route::middleware('role:cashier')->prefix('cashier')->group(function () {
+    Route::middleware('role:kasir')->prefix('kasir')->group(function () {
         
         // Main Transaction Page
         Route::get('/', [TransactionController::class, 'index'])->name('cashier.index');
