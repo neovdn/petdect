@@ -6,6 +6,7 @@ use App\Models\WastePrice;
 use App\Models\CashFlow; // Model CashFlow ditambahkan
 use App\Models\Customer;
 use App\Models\User;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -85,10 +86,51 @@ class MasterDataController extends Controller
 
     // ============ CUSTOMERS ============
     
-    public function customers()
+    public function customers(Request $request)
     {
-        $customers = Customer::orderBy('created_at', 'desc')->get();
-        return view('admin.customers', compact('customers'));
+        // 1. Query Dasar dengan perhitungan jumlah transaksi
+        $query = Customer::withCount('transactions');
+
+        // 2. Filter Search (Nama atau Kode)
+        if ($request->has('search') && $request->search != '') {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('full_name', 'like', '%'.$search.'%')
+                  ->orWhere('customer_code', 'like', '%'.$search.'%');
+            });
+        }
+
+        // 3. Filter Sort (Urutkan)
+        if ($request->has('sort')) {
+            switch ($request->sort) {
+                case 'trx_desc':
+                    $query->orderBy('transactions_count', 'desc');
+                    break;
+                case 'trx_asc':
+                    $query->orderBy('transactions_count', 'asc');
+                    break;
+                case 'name_asc':
+                    $query->orderBy('full_name', 'asc');
+                    break;
+                case 'name_desc':
+                    $query->orderBy('full_name', 'desc');
+                    break;
+                default:
+                    $query->orderBy('created_at', 'desc');
+            }
+        } else {
+            $query->orderBy('created_at', 'desc');
+        }
+
+        $customers = $query->paginate(10);
+
+        // 4. Hitung Statistik untuk Card
+        $totalCustomers = Customer::count();
+        $totalTransactions = Transaction::count();
+        // Rata-rata jumlah transaksi per pelanggan
+        $avgTransactions = $totalCustomers > 0 ? round($totalTransactions / $totalCustomers, 1) : 0;
+
+        return view('admin.customers', compact('customers', 'totalCustomers', 'avgTransactions'));
     }
 
     public function storeCustomer(Request $request)
