@@ -79,6 +79,9 @@ Route::middleware('auth')->group(function () {
         Route::post('/users', [MasterDataController::class, 'storeUser'])->name('admin.users.store');
         Route::put('/users/{id}', [MasterDataController::class, 'updateUser'])->name('admin.users.update');
         Route::delete('/users/{id}', [MasterDataController::class, 'deleteUser'])->name('admin.users.delete');
+
+        // Statistik
+        Route::get('/stats', [\App\Http\Controllers\StatsController::class, 'index'])->name('admin.stats');
     });
 
     // ------------------------------------------------
