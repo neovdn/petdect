@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\WastePrice;
+use App\Models\CashFlow; // Model CashFlow ditambahkan
 use App\Models\Customer;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -10,14 +11,65 @@ use Illuminate\Support\Facades\Hash;
 
 class MasterDataController extends Controller
 {
-    // ============ WASTE PRICES ============
+    // ============ WASTE PRICES & CASH FLOW ============
     
     public function wastePrices()
     {
+        // 1. Ambil Data Harga Sampah
         $wastePrices = WastePrice::all();
-        return view('admin.waste-prices', compact('wastePrices'));
+        
+        // 2. Hitung Statistik Kas (Cash Flow)
+        // Menghitung total masuk (in) dan keluar (out)
+        $totalIn = CashFlow::where('type', 'in')->sum('amount');
+        $totalOut = CashFlow::where('type', 'out')->sum('amount');
+        
+        // Saldo saat ini = Total Masuk - Total Keluar
+        $currentBalance = $totalIn - $totalOut;
+
+        // 3. Ambil Riwayat Transaksi Kas
+        // Diurutkan dari yang terbaru, dipagination per 10 item
+        $cashFlows = CashFlow::orderBy('created_at', 'desc')->paginate(10);
+
+        // Return view dengan semua data yang dibutuhkan
+        return view('admin.waste-prices', compact('wastePrices', 'totalIn', 'totalOut', 'currentBalance', 'cashFlows'));
     }
 
+    // Method Baru: Update Harga Sampah Sekaligus (Batch)
+    public function updateWastePriceBatch(Request $request)
+    {
+        $request->validate([
+            'prices' => 'required|array',
+            'prices.*' => 'required|numeric|min:0',
+        ]);
+
+        foreach ($request->prices as $type => $price) {
+            WastePrice::where('waste_type', $type)->update(['price_per_kg' => $price]);
+        }
+
+        return redirect()->back()->with('success', 'Harga sampah berhasil diperbarui.');
+    }
+
+    // Method Baru: Tambah Modal Kas Manual
+    public function storeCashModal(Request $request)
+    {
+        $request->validate([
+            'amount' => 'required|numeric|min:1',
+            'description' => 'nullable|string|max:255',
+        ]);
+
+        // Simpan transaksi modal ke CashFlow
+        CashFlow::create([
+            'type' => 'in', // Modal dianggap pemasukan (debit)
+            'amount' => $request->amount,
+            'description' => $request->description ?? 'Penambahan Modal Kas',
+            // Jika ada kolom user_id di tabel cash_flows, uncomment baris bawah:
+            // 'user_id' => auth()->id(),
+        ]);
+
+        return redirect()->back()->with('success', 'Modal kas berhasil ditambahkan.');
+    }
+
+    // Method Lama (Opsional, tetap disimpan untuk backward compatibility jika perlu)
     public function updateWastePrice(Request $request, $waste_type)
     {
         $validated = $request->validate([

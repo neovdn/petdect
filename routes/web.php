@@ -58,8 +58,14 @@ Route::middleware('auth')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
         
         // Master Data: Harga Sampah
+        // Halaman Utama
         Route::get('/waste-prices', [MasterDataController::class, 'wastePrices'])->name('admin.waste-prices');
-        Route::post('/waste-prices/{waste_type}', [MasterDataController::class, 'updateWastePrice'])->name('admin.waste-prices.update');
+        
+        // Action: Update Harga (Semua sekaligus)
+        Route::post('/waste-prices/update-batch', [MasterDataController::class, 'updateWastePriceBatch'])->name('admin.waste-prices.update-batch');
+        
+        // Action: Tambah Modal
+        Route::post('/cash-flow/store', [MasterDataController::class, 'storeCashModal'])->name('admin.cash-flow.store');
         
         // Master Data: Nasabah (Customers)
         Route::get('/customers', [MasterDataController::class, 'customers'])->name('admin.customers');
