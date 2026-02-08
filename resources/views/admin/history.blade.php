@@ -4,7 +4,7 @@
 
 @section('content')
     <div class="bg-white p-5 rounded-2xl shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-slate-100 mb-6">
-        <form action="{{ route('cashier.history') }}" method="GET" class="flex flex-col md:flex-row md:items-center gap-4 justify-between">
+        <form action="{{ route('admin.history') }}" method="GET" class="flex flex-col md:flex-row md:items-center gap-4 justify-between">
             
             <div class="flex flex-1 gap-4 overflow-x-auto pb-2 md:pb-0">
                 <div class="relative min-w-[200px]">
@@ -36,10 +36,10 @@
             </div>
 
             <div class="flex items-center gap-3 shrink-0">
-                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl text-sm font-medium transition-colors shadow-sm shadow-blue-200">
+                <button type="submit" class="w-full justify-center rounded-lg bg-emerald-600 px-3 py-2 text-sm text-white shadow-sm hover:bg-emerald-700 transition-colors"">
                     Terapkan
                 </button>
-                <a href="{{ route('cashier.history') }}" class="bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 px-5 py-2.5 rounded-xl text-sm font-medium transition-colors">
+                <a href="{{ route('admin.history') }}" class="bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 px-5 py-2.5 rounded-xl text-sm font-medium transition-colors">
                     Reset
                 </a>
             </div>

@@ -57,6 +57,7 @@ Route::middleware('auth')->group(function () {
         // Dashboard
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
         
+        Route::get('/history', [TransactionController::class, 'adminHistory'])->name('admin.history');
         // Master Data: Harga Sampah
         // Halaman Utama
         Route::get('/waste-prices', [MasterDataController::class, 'wastePrices'])->name('admin.waste-prices');

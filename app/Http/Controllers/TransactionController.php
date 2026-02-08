@@ -256,6 +256,37 @@ class TransactionController extends Controller
     /**
      * Riwayat transaksi
      */
+    public function adminHistory(Request $request)
+    {
+        // 1. Mulai Query dengan relasi
+        $query = Transaction::with(['customer', 'cashier', 'items']);
+
+        // 2. Filter Pencarian (Search)
+        if ($request->has('search') && $request->search != '') {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('transaction_code', 'like', "%$search%")
+                  ->orWhere('customer_name_snapshot', 'like', "%$search%");
+            });
+        }
+
+        // 3. Filter Tanggal
+        if ($request->has('date') && $request->date != '') {
+            $query->whereDate('created_at', $request->date);
+        }
+
+        // 4. Ambil data (Paginate)
+        $transactions = $query->latest()->paginate(10);
+        
+        // 5. Hitung total nilai (opsional, untuk ringkasan di atas tabel)
+        // Catatan: $transactions->sum() hanya menghitung page saat ini.
+        // Jika ingin total semua, gunakan query terpisah atau biarkan seperti ini untuk total per halaman.
+        $totalValue = $transactions->sum('total_amount'); 
+
+        // 6. RETURN VIEW ADMIN (Perbaikan utama disini)
+        return view('admin.history', compact('transactions', 'totalValue'));
+    }
+    
     public function history(Request $request)
     {
         // Tambahkan 'items' ke dalam with()
