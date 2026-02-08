@@ -169,12 +169,14 @@
 
     {{-- MODAL STRUCTURE (FIXED WIDTH & CENTERED) --}}
     
+    {{-- MODAL TAMBAH CUSTOMER --}}
     <div id="addCustomerModal" class="fixed inset-0 z-50 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
         <div class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm transition-opacity" onclick="closeModal('addCustomerModal')"></div>
         
         <div class="fixed inset-0 z-10 overflow-y-auto">
             <div class="flex min-h-full items-center justify-center p-4 text-center">
-                <div class="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-xl transition-all w-full max-w-lg">
+                {{-- Updated: max-w-md and mx-auto --}}
+                <div class="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-xl transition-all w-full max-w-md mx-auto">
                     <form action="{{ route('admin.customers.store') }}" method="POST">
                         @csrf
                         <div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
@@ -213,11 +215,13 @@
         </div>
     </div>
 
+    {{-- MODAL EDIT CUSTOMER --}}
     <div id="editCustomerModal" class="fixed inset-0 z-50 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
         <div class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm transition-opacity" onclick="closeModal('editCustomerModal')"></div>
         <div class="fixed inset-0 z-10 overflow-y-auto">
             <div class="flex min-h-full items-center justify-center p-4 text-center">
-                <div class="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-xl transition-all w-full max-w-lg">
+                {{-- Updated: max-w-md and mx-auto --}}
+                <div class="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-xl transition-all w-full max-w-md mx-auto">
                     <form id="editCustomerForm" method="POST">
                         @csrf
                         @method('PUT')
@@ -257,11 +261,13 @@
         </div>
     </div>
 
+    {{-- MODAL DELETE CUSTOMER --}}
     <div id="deleteCustomerModal" class="fixed inset-0 z-50 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
         <div class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm transition-opacity" onclick="closeModal('deleteCustomerModal')"></div>
         <div class="fixed inset-0 z-10 overflow-y-auto">
             <div class="flex min-h-full items-center justify-center p-4 text-center">
-                <div class="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-xl transition-all w-full max-w-lg">
+                {{-- Updated: max-w-sm and mx-auto --}}
+                <div class="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-xl transition-all w-full max-w-sm mx-auto">
                     <div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
                         <div class="sm:flex sm:items-start">
                             <div class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
