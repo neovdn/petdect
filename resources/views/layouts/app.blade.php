@@ -27,13 +27,13 @@
 
         <aside class="sidebar-transition group w-20 hover:w-72 bg-white border-r border-slate-200 flex flex-col fixed h-full z-30 shadow-sm">
             
-            <div class="h-16 flex items-center justify-center border-b border-slate-100 group-hover:justify-start group-hover:px-6 transition-all">
+            <div class="h-16 flex items-center px-5 border-b border-slate-100 transition-all">
                 <div class="h-10 w-10 bg-gradient-to-tr from-emerald-400 to-blue-500 rounded-xl flex items-center justify-center text-white shrink-0 shadow-md shadow-blue-200">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                     </svg>
                 </div>
-                <span class="ml-3 font-bold text-lg text-slate-800 opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap overflow-hidden delay-100">
+                <span class="ml-2 font-bold text-lg text-slate-800 opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap overflow-hidden delay-100">
                     SmartWaste
                 </span>
             </div>
