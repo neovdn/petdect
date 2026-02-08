@@ -90,7 +90,7 @@ Route::middleware('auth')->group(function () {
     // Note: Jika Admin juga boleh akses kasir, pastikan middleware-nya sesuai.
     // Di sini saya biarkan terbuka untuk semua yang auth (admin & cashier), 
     // atau kamu bisa tambahkan middleware khusus jika perlu.
-    Route::prefix('cashier')->group(function () {
+    Route::middleware('role:cashier')->prefix('cashier')->group(function () {
         
         // Main Transaction Page
         Route::get('/', [TransactionController::class, 'index'])->name('cashier.index');
@@ -108,6 +108,13 @@ Route::middleware('auth')->group(function () {
         
         // Print Receipt
         Route::get('/print/{id}', [TransactionController::class, 'printReceipt'])->name('cashier.print');
+
+        Route::get('/customers', [MasterDataController::class, 'customers'])->name('cashier.customers');
+        Route::prefix('api')->group(function () {
+            // ... copy existing api routes ...
+            Route::get('/reading', [TransactionController::class, 'getCurrentReading'])->name('cashier.api.reading');
+            Route::post('/checkout', [TransactionController::class, 'checkout'])->name('cashier.api.checkout');
+        });
     });
 
 });

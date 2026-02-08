@@ -24,7 +24,8 @@ class TransactionController extends Controller
         $wastePrices = WastePrice::all();
         $currentReading = CurrentReading::where('device_id', 'SCALE-001')->first();
         
-        return view('index', compact('customers', 'wastePrices', 'currentReading'));
+        // Pastikan kamu membuat folder 'cashier' di dalam 'resources/views'
+        return view('cashier.dashboard', compact('customers', 'wastePrices', 'currentReading'));
     }
 
     /**
