@@ -85,7 +85,7 @@ class DashboardController extends Controller
         // =================================================================
         // 4. RETURN VIEW
         // =================================================================
-        return view('dashboard', compact(
+        return view('admin.dashboard', compact(
             'totalExpenses',
             'totalWeight',
             'totalTransactions',

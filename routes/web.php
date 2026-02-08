@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\TransactionController;
@@ -23,6 +24,15 @@ use App\Http\Controllers\MasterDataController;
 
 // Redirect root ke login
 Route::get('/', function () {
+    if (Auth::check()) {
+        // Jika user sudah login, arahkan sesuai role
+        if (Auth::user()->role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        } else {
+            return redirect()->route('cashier.index');
+        }
+    }
+    // Jika belum login, baru lempar ke login
     return redirect()->route('login');
 });
 

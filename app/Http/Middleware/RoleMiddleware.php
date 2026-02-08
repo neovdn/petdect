@@ -16,12 +16,6 @@ class RoleMiddleware
      */
     public function handle(Request $request, Closure $next, string $role): Response
     {
-        // Ganti auth()->check() dengan Auth::check()
-        if (!Auth::check()) {
-            return redirect('/login');
-        }
-
-        // Ganti auth()->user() dengan Auth::user()
         // Pastikan role user sesuai
         if (Auth::user()->role !== $role) {
             abort(403, 'Unauthorized access');
