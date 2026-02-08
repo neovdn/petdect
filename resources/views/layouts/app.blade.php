@@ -16,8 +16,11 @@
 
     <style>
         body { font-family: 'Poppins', sans-serif; }
-        /* Transisi smooth untuk sidebar */
         .sidebar-transition { transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        /* Hide scrollbar for IE, Edge and Firefox */
+        .no-scrollbar { -ms-overflow-style: none;  scrollbar-width: none; }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased">
@@ -37,13 +40,16 @@
                 </span>
             </div>
 
-            <nav class="flex-1 py-6 space-y-2 overflow-y-auto px-3">
+            <nav class="flex-1 py-6 space-y-2 overflow-y-auto px-3 no-scrollbar">
                 
                 @php
-                    function menuItem($route, $icon, $label, $active = false) {
-                        $activeClass = $active ? 'bg-blue-50 text-blue-600' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900';
+                    function menuItem($route, $icon, $label, $isActive = false) {
+                        // Jika route adalah '#', jangan error
+                        $href = ($route !== '#') ? route($route) : '#';
+                        $activeClass = $isActive ? 'bg-blue-50 text-blue-600' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900';
+                        
                         return '
-                        <a href="'.$route.'" class="flex items-center px-3 py-3 rounded-xl transition-all duration-200 group/item '.$activeClass.'">
+                        <a href="'.$href.'" class="flex items-center px-3 py-3 rounded-xl transition-all duration-200 group/item '.$activeClass.'">
                             <div class="shrink-0">
                                 '.$icon.'
                             </div>
@@ -55,13 +61,26 @@
                     }
                 @endphp
 
-                {!! menuItem(route('dashboard'), '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>', 'Dashboard', request()->routeIs('dashboard')) !!}
+                {!! menuItem(
+                    'admin.dashboard', 
+                    '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>', 
+                    'Dashboard', 
+                    request()->routeIs('admin.dashboard')
+                ) !!}
 
-                {!! menuItem('#', '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>', 'Master Data') !!}
+                {!! menuItem(
+                    'cashier.index', 
+                    '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>', 
+                    'Kasir & Transaksi',
+                    request()->routeIs('cashier.*')
+                ) !!}
 
-                {!! menuItem('#', '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>', 'Transaksi') !!}
-
-                 {!! menuItem('#', '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>', 'Laporan') !!}
+                {!! menuItem(
+                    'admin.waste-prices', 
+                    '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>', 
+                    'Master Data',
+                    request()->routeIs('admin.waste-prices') || request()->routeIs('admin.customers') || request()->routeIs('admin.users')
+                ) !!}
 
             </nav>
 
@@ -85,7 +104,6 @@
         <div class="flex-1 flex flex-col h-screen pl-20 transition-all duration-300 w-full relative">
             
             <header class="h-16 bg-white/80 backdrop-blur-md border-b border-slate-200 flex items-center justify-between px-8 sticky top-0 z-20">
-                
                 <div>
                     <h1 class="text-xl font-bold text-slate-800 tracking-tight">@yield('header_title', 'Dashboard')</h1>
                     <p class="text-xs text-slate-400">Welcome back, {{ Auth::user()->name ?? 'Administrator' }}</p>
@@ -101,11 +119,11 @@
 
                     <div class="flex items-center space-x-3 pl-4 border-l border-slate-200">
                         <div class="text-right hidden md:block">
-                            <div class="text-sm font-semibold text-slate-700">{{ Auth::user()->name ?? 'Admin User' }}</div>
-                            <div class="text-xs text-slate-400">Administrator</div>
+                            <div class="text-sm font-semibold text-slate-700">{{ Auth::user()->name ?? 'User' }}</div>
+                            <div class="text-xs text-slate-400">{{ Auth::user()->role ?? 'Admin' }}</div>
                         </div>
                         <div class="h-10 w-10 rounded-full bg-slate-200 overflow-hidden border-2 border-white shadow-sm">
-                            <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name ?? 'A') }}&background=0D9488&color=fff" alt="User Avatar">
+                            <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name ?? 'A') }}&background=0D9488&color=fff" alt="Avatar">
                         </div>
                     </div>
                 </div>
@@ -116,6 +134,5 @@
             </main>
         </div>
     </div>
-
 </body>
 </html>
