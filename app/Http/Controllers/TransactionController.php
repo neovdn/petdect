@@ -256,12 +256,29 @@ class TransactionController extends Controller
     /**
      * Riwayat transaksi
      */
-    public function history()
+    public function history(Request $request)
     {
-        $transactions = Transaction::with(['customer', 'cashier'])
-            ->latest()
-            ->paginate(20);
+        // Tambahkan 'items' ke dalam with()
+        $query = Transaction::with(['customer', 'cashier', 'items']);
 
-        return view('cashier.history', compact('transactions'));
+        // Logika filter sederhana (jika diperlukan)
+        if ($request->has('search') && $request->search != '') {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('transaction_code', 'like', "%$search%")
+                ->orWhere('customer_name_snapshot', 'like', "%$search%");
+            });
+        }
+
+        if ($request->has('date') && $request->date != '') {
+            $query->whereDate('created_at', $request->date);
+        }
+
+        $transactions = $query->latest()->paginate(10);
+        
+        // Hitung total nilai transaksi di halaman ini (atau total keseluruhan query jika mau)
+        $totalValue = $transactions->sum('total_amount'); 
+
+        return view('cashier.history', compact('transactions', 'totalValue'));
     }
 }
