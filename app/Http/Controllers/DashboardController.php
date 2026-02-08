@@ -38,7 +38,7 @@ class DashboardController extends Controller
             })
             ->values();
 
-        return view('admin.dashboard', compact(
+        return view('dashboard', compact(
             'todayTransactions',
             'todayWaste',
             'currentBalance',
