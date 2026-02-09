@@ -29,7 +29,7 @@ Route::get('/', function () {
         if (Auth::user()->role === 'admin') {
             return redirect()->route('admin.dashboard');
         } else {
-            return redirect()->route('cashier.index');
+            return redirect()->route('cashier.dashboard');
         }
     }
     // Jika belum login, baru lempar ke login
@@ -93,7 +93,7 @@ Route::middleware('auth')->group(function () {
     Route::middleware('role:kasir')->prefix('kasir')->group(function () {
         
         // Main Transaction Page
-        Route::get('/', [TransactionController::class, 'index'])->name('cashier.index');
+        Route::get('/', [TransactionController::class, 'index'])->name('cashier.dashboard');
         Route::get('/history', [TransactionController::class, 'history'])->name('cashier.history');
         
         // API Routes (AJAX Operations)
