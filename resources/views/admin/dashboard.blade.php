@@ -59,7 +59,7 @@
         <div class="lg:col-span-2 bg-white rounded-2xl shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-slate-100 p-6">
             <div class="flex items-center justify-between mb-6">
                 <h3 class="text-lg font-bold text-slate-800">Recent Transactions</h3>
-                <a href="{{ route('cashier.index') }}" class="text-sm text-blue-500 hover:text-blue-600 font-medium">View All</a>
+                <a href="{{ route('cashier.dashboard') }}" class="text-sm text-blue-500 hover:text-blue-600 font-medium">View All</a>
             </div>
             
             <div class="overflow-x-auto">
