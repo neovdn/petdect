@@ -181,7 +181,79 @@
     const pricePet = Number("{{ $petPrice }}");
     const priceNonPet = Number("{{ $nonPetPrice }}");
     
+    // ====================================================
+    // CAMERA STREAM MANAGEMENT
+    // ====================================================
+    let cameraStream = null;
+
+    async function startCamera() {
+        const video = document.getElementById('cameraFeed');
+        const placeholder = video.previousElementSibling; // div placeholder
+
+        try {
+            // Request akses kamera device laptop
+            cameraStream = await navigator.mediaDevices.getUserMedia({
+                video: {
+                    width: { ideal: 1280 },
+                    height: { ideal: 720 },
+                    facingMode: 'environment' // Prioritas kamera belakang, fallback ke depan
+                },
+                audio: false
+            });
+
+            // Set stream ke video element
+            video.srcObject = cameraStream;
+            video.classList.remove('hidden');
+            placeholder.classList.add('hidden');
+
+            return true;
+        } catch (error) {
+            console.error('Gagal mengakses kamera:', error);
+            
+            let message = 'Tidak dapat mengakses kamera.';
+            if (error.name === 'NotAllowedError') {
+                message = 'Akses kamera ditolak. Silakan izinkan akses kamera di pengaturan browser Anda, lalu refresh halaman.';
+            } else if (error.name === 'NotFoundError') {
+                message = 'Kamera tidak ditemukan. Pastikan laptop Anda memiliki kamera yang terhubung.';
+            } else if (error.name === 'NotReadableError') {
+                message = 'Kamera sedang digunakan oleh aplikasi lain. Tutup aplikasi tersebut dan coba lagi.';
+            } else if (error.name === 'OverconstrainedError') {
+                // Coba lagi tanpa constraint spesifik
+                try {
+                    cameraStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+                    video.srcObject = cameraStream;
+                    video.classList.remove('hidden');
+                    placeholder.classList.add('hidden');
+                    return true;
+                } catch (retryError) {
+                    message = 'Kamera tidak mendukung resolusi yang diminta.';
+                }
+            }
+
+            alert(message);
+            return false;
+        }
+    }
+
+    function stopCamera() {
+        const video = document.getElementById('cameraFeed');
+        const placeholder = video.previousElementSibling;
+
+        // Stop semua track kamera
+        if (cameraStream) {
+            cameraStream.getTracks().forEach(track => track.stop());
+            cameraStream = null;
+        }
+
+        // Reset video element
+        video.srcObject = null;
+        video.classList.add('hidden');
+        placeholder.classList.remove('hidden');
+    }
+
+    // ====================================================
     // TAB SWITCHING LOGIC
+    // ====================================================
     function switchTab(type) {
         const btnExisting = document.getElementById('tabExisting');
         const btnNew = document.getElementById('tabNew');
@@ -201,39 +273,44 @@
         }
     }
 
-    // DETECTION CONTROL MOCKUP
+    // ====================================================
+    // DETECTION CONTROL
+    // ====================================================
     let isDetecting = false;
     let detectionInterval;
 
-    function startDetection() {
-        document.getElementById('btnStart').className = "hidden"; // Hide start
+    async function startDetection() {
+        // Aktifkan kamera terlebih dahulu
+        const cameraStarted = await startCamera();
+        if (!cameraStarted) return; // Batalkan jika kamera gagal
+
+        document.getElementById('btnStart').className = "hidden";
         const btnStop = document.getElementById('btnStop');
         btnStop.disabled = false;
         btnStop.className = "flex items-center justify-center w-full py-3 px-4 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-xl transition-all shadow-lg shadow-red-200 active:scale-95";
         
         document.getElementById('statusDot').className = "w-2 h-2 rounded-full bg-emerald-500 mr-2 animate-pulse";
-        document.getElementById('statusText').innerText = "Mendeteksi...";
+        document.getElementById('statusText').innerText = "Kamera Aktif — Mendeteksi...";
         
         isDetecting = true;
 
-        // SIMULASI DATA MASUK DARI IOT (Hanya Mockup untuk Demo)
+        // SIMULASI DATA MASUK DARI IOT (Mockup untuk Demo)
         // Nanti diganti dengan fetch API ke route('cashier.api.reading')
         detectionInterval = setInterval(() => {
-            // Random weight mockup
             const wPet = (Math.random() * 2).toFixed(1);
             const wNonPet = (Math.random() * 1.5).toFixed(1);
-            
             updateWeights(wPet, wNonPet);
         }, 2000);
     }
 
     function stopDetection() {
+        // Matikan kamera
+        stopCamera();
+
         const btnStart = document.getElementById('btnStart');
         const btnStop = document.getElementById('btnStop');
 
-        btnStart.className = "flex items-center justify-center w-full py-3 px-4 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold rounded-xl transition-all shadow-lg shadow-emerald-200 active:scale-95"; // Restore start style
-        btnStop.className = "hidden"; // Hide stop button completely or disable it
-        // Or revert style:
+        btnStart.className = "flex items-center justify-center w-full py-3 px-4 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold rounded-xl transition-all shadow-lg shadow-emerald-200 active:scale-95";
         btnStop.className = "flex items-center justify-center w-full py-3 px-4 bg-slate-100 text-slate-400 font-semibold rounded-xl transition-all cursor-not-allowed";
         btnStop.disabled = true;
 
@@ -244,6 +321,16 @@
         isDetecting = false;
     }
 
+    // Pastikan kamera dimatikan saat user meninggalkan halaman
+    window.addEventListener('beforeunload', () => {
+        if (cameraStream) {
+            cameraStream.getTracks().forEach(track => track.stop());
+        }
+    });
+
+    // ====================================================
+    // WEIGHT & CALCULATION
+    // ====================================================
     function updateWeights(pet, nonPet) {
         document.getElementById('weightPet').value = pet;
         document.getElementById('weightNonPet').value = nonPet;
@@ -258,7 +345,6 @@
         const totalNP = wNonPet * priceNonPet;
         const grand = totalP + totalNP;
 
-        // Format Currency
         const fmt = (num) => 'Rp ' + num.toLocaleString('id-ID');
 
         document.getElementById('totalPet').value = fmt(totalP);
